@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#10172a">
+<title>Siatkówka Quest</title>
+<style>
+:root{--bg:#0b1020;--panel:#141d33;--panel2:#1a2742;--line:#2b3a59;--text:#f4f7ff;--muted:#aab6d0;--lime:#3fe6f5;--cyan:#7ab0ff;--pink:#ff8dba;--gold:#ffd166;--good:#80e0a3;--bad:#ff8e8e}
+*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:radial-gradient(ellipse at 80% -10%,#263c67 0,transparent 38%),var(--bg);color:var(--text);font:16px/1.5 system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif}
+button,input,select{font:inherit}button{cursor:pointer}button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible{outline:3px solid var(--cyan);outline-offset:3px}
+.app{max-width:1200px;margin:auto;padding:18px}.topbar{display:flex;align-items:center;justify-content:space-between;gap:16px;padding:10px 0 24px}.brand{display:flex;align-items:center;gap:12px}.logo{width:46px;height:46px;border-radius:15px;background:var(--lime);color:#10172a;display:grid;place-items:center;font-size:25px;font-weight:900;box-shadow:0 8px 30px #3fe6f520}.brand h1{font-size:20px;margin:0;letter-spacing:-.5px}.brand p{margin:0;color:var(--muted);font-size:12px}.topstats{display:flex;gap:10px;flex-wrap:wrap}.pill{border:1px solid var(--line);background:#141d33cc;padding:8px 12px;border-radius:999px;font-size:13px;color:var(--muted)}.pill b{color:var(--lime)}
+.hero{display:grid;grid-template-columns:1.3fr .7fr;gap:16px;margin-bottom:18px}.hero-main,.hero-side,.panel,.stat-card{background:linear-gradient(145deg,#192641,#111a2e);border:1px solid var(--line);border-radius:24px}.hero-main{padding:clamp(22px,4vw,40px);position:relative;overflow:hidden;min-height:255px}.hero-main:after{content:"🏐";position:absolute;right:3%;bottom:-25px;font-size:clamp(110px,17vw,190px);opacity:.12;transform:rotate(-18deg);pointer-events:none}.eyebrow{color:var(--lime);font-size:12px;font-weight:800;letter-spacing:1.5px;text-transform:uppercase}.hero h2{font-size:clamp(28px,4vw,45px);line-height:1.08;letter-spacing:-1.5px;margin:12px 0}.hero p{color:var(--muted);max-width:470px;margin:0 0 22px}.actions{display:flex;gap:10px;flex-wrap:wrap;position:relative;z-index:1}.btn{border:0;border-radius:13px;padding:11px 16px;font-weight:800;transition:transform .15s,filter .15s}.btn:hover{transform:translateY(-1px);filter:brightness(1.05)}.primary{background:var(--lime);color:#121a25}.secondary{background:#253452;color:var(--text);border:1px solid #3b4b6c}.hero-side{padding:22px;display:flex;flex-direction:column;justify-content:space-between}.levelrow{display:flex;justify-content:space-between;align-items:center;gap:12px}.level-icon{height:52px;width:52px;border-radius:16px;background:#293b5b;display:grid;place-items:center;font-size:26px}.levelrow h3{margin:0;font-size:18px}.levelrow small{color:var(--muted)}.xpnum{font-size:30px;font-weight:900;letter-spacing:-1px;color:var(--lime);margin-top:18px}.xpnum span{font-size:14px;color:var(--muted);font-weight:600;letter-spacing:0}.progress{height:9px;background:#0b1223;border-radius:20px;overflow:hidden;margin:10px 0}.progress div{display:block;height:100%;background:linear-gradient(90deg,var(--lime),var(--cyan));width:0;min-width:0;transition:width .3s;border-radius:20px;box-shadow:0 0 8px #3fe6f566}.tiny{font-size:12px;color:var(--muted)}
+.xp-ball-row{display:flex;align-items:center;gap:14px;margin:12px 0 8px}.xp-fraction{font-size:25px;font-weight:900;letter-spacing:-.6px;color:var(--lime)}.xp-ball{border:0;background:#263653;border:2px solid #3fe6f5;border-radius:50%;width:88px;height:88px;min-width:88px;display:grid;place-items:center;font-size:56px;cursor:pointer;touch-action:manipulation;box-shadow:0 5px 0 #0b1223;transition:transform .15s}.xp-ball:active{transform:scale(.94)}.xp-ball.bounce{animation:ballBounce .55s ease}.xp-ball-hint{font-size:12px;color:var(--muted)}@keyframes ballBounce{0%{transform:translateY(0) rotate(0)}28%{transform:translateY(-38px) rotate(70deg)}55%{transform:translateY(0) rotate(150deg)}75%{transform:translateY(-16px) rotate(230deg)}100%{transform:translateY(0) rotate(360deg)}}
+.nav{display:flex;gap:8px;overflow:auto;padding:4px 0 18px;scrollbar-width:thin}.nav button{white-space:nowrap;border:1px solid var(--line);background:#111a2e;color:var(--muted);border-radius:12px;padding:10px 14px;font-weight:700}.nav button.active{background:var(--lime);color:#111a2e;border-color:var(--lime)}
+.view{display:none}.view.active{display:block}.section-head{display:flex;align-items:end;justify-content:space-between;gap:14px;margin:10px 0 16px}.section-head h2{font-size:25px;letter-spacing:-.6px;margin:0}.section-head p{margin:4px 0 0;color:var(--muted);font-size:14px}.grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}.panel{padding:20px}.stat-card{padding:18px}.stat-label{font-size:13px;color:var(--muted)}.stat-value{font-size:30px;font-weight:900;letter-spacing:-1px;margin:4px 0}.stat-note{font-size:12px;color:var(--muted)}.card-icon{font-size:26px;margin-bottom:10px}.panel h3{margin:0 0 8px;font-size:17px}.panel p{color:var(--muted);margin:0}.wide{grid-column:span 2}.quiz-layout{display:grid;grid-template-columns:minmax(0,1.5fr) minmax(250px,.8fr);gap:14px}.question-meta{display:flex;align-items:center;justify-content:space-between;gap:8px;flex-wrap:wrap;color:var(--muted);font-size:13px}.tag{padding:5px 9px;border-radius:8px;background:#263653;color:var(--cyan);font-size:12px;font-weight:800}.question{font-size:22px;line-height:1.3;margin:20px 0}.answers{display:grid;gap:9px}.answer{display:flex;align-items:center;gap:12px;width:100%;text-align:left;border:1px solid var(--line);background:#10192c;color:var(--text);border-radius:13px;padding:13px}.answer .letter{height:30px;width:30px;border-radius:9px;background:#253452;display:grid;place-items:center;font-weight:900;color:var(--lime);flex-shrink:0}.answer.selected{border-color:var(--lime);background:#273648}.answer.correct{border-color:var(--good);background:#16372f}.answer.wrong{border-color:var(--bad);background:#3c202b}.answer:disabled{cursor:default}.feedback{margin-top:14px;padding:13px;border-radius:12px;background:#17243b;color:var(--muted);display:none}.feedback.show{display:block}.feedback strong{display:block;color:var(--text);margin-bottom:3px}.quiz-footer{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-top:18px}.list{display:grid;gap:10px}.rowitem{display:flex;align-items:center;gap:12px;padding:13px;border-radius:13px;background:#10192c;border:1px solid #263653}.rowitem .grow{flex:1;min-width:0}.rowitem strong{display:block}.rowitem small{color:var(--muted)}.badge-icon{width:48px;height:48px;display:grid;place-items:center;border-radius:15px;background:#263653;font-size:24px;flex-shrink:0}.locked{opacity:.45;filter:grayscale(.7)}.badge-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}.badge-card{text-align:center;border:1px solid var(--line);background:#10192c;border-radius:16px;padding:18px 12px}.badge-card .badge-icon{margin:0 auto 10px}.badge-card strong{display:block;font-size:14px}.badge-card small{color:var(--muted);font-size:12px}.training-card{display:flex;flex-direction:column;gap:14px}.training-top{display:flex;align-items:flex-start;gap:12px}.training-top .badge-icon{background:#2b3a58}.training-top .grow{flex:1}.training-top p{font-size:13px}.checkline{display:flex;align-items:center;gap:10px;padding:9px 0;border-top:1px solid #263653;color:#dfe6f7;font-size:14px}.checkline input{width:18px;height:18px;accent-color:var(--lime)}.training-progress{font-size:12px;color:var(--muted)}.empty{padding:28px;text-align:center;color:var(--muted)}.rank{font-size:20px;font-weight:900;width:30px;text-align:center;color:var(--gold)}.local-note{font-size:12px;color:var(--muted);padding:12px;border-radius:12px;background:#10192c;border:1px dashed var(--line);margin-top:14px}.toast{position:fixed;bottom:20px;left:50%;transform:translate(-50%,20px);background:var(--lime);color:#111a2e;font-weight:800;padding:12px 18px;border-radius:12px;opacity:0;pointer-events:none;transition:.2s;z-index:10;box-shadow:0 8px 30px #0006}.toast.show{opacity:1;transform:translate(-50%,0)}footer{color:var(--muted);text-align:center;font-size:12px;padding:30px 0 10px}
+@media(max-width:800px){.hero{grid-template-columns:1fr}.hero-main{min-height:230px}.hero-side{gap:15px}.grid{grid-template-columns:repeat(2,minmax(0,1fr))}.quiz-layout{grid-template-columns:1fr}.wide{grid-column:span 2}.badge-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:500px){.app{padding:12px}.topbar{align-items:flex-start}.topstats{justify-content:flex-end}.topstats .pill:last-child{display:none}.brand h1{font-size:17px}.hero-main{padding:22px}.hero h2{font-size:32px}.grid{grid-template-columns:1fr}.wide{grid-column:span 1}.section-head{align-items:flex-start;flex-direction:column}.badge-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.panel{padding:16px}.question{font-size:20px}.quiz-footer{align-items:stretch;flex-direction:column}.quiz-footer button{width:100%}}
+</style>
+<link rel="manifest" href="manifest.webmanifest"><meta name="theme-color" content="#0b1020"><link rel="icon" href="icon-192.png"><link rel="apple-touch-icon" href="icon-192.png"></head>
+<body>
+<div class="app">
+  <header class="topbar">
+    <div class="brand"><div class="logo">🏐</div><div><h1>SIATKÓWKA QUEST</h1><p>Trenuj. Ucz się. Wygrywaj.</p></div></div>
+    <div class="topstats"><div class="pill">⭐ Poziom <b id="topLevel">1</b></div><div class="pill">⚡ <b id="topXP">0 XP</b></div></div>
+  </header>
+
+  <section class="hero">
+    <div class="hero-main">
+      <div class="eyebrow">Twoja siatkarska przygoda</div>
+      <h2>Każda piłka<br>przybliża cię do celu.</h2>
+      <p>Sprawdź wiedzę, zdobywaj XP i rozwijaj umiejętności przyjmującego. Małe kroki robią różnicę.</p>
+      <div class="actions"><button class="btn primary" onclick="showView('quiz')">▶ Zacznij quiz</button><button class="btn secondary" onclick="showView('training')">Plan treningowy</button></div>
+    </div>
+    <div class="hero-side">
+      <div class="levelrow"><div class="level-icon">⚡</div><div style="flex:1"><h3 id="heroLevelName">Początkujący</h3><small id="heroLevelSub">Poziom 1 · Rozgrzewka</small></div></div>
+      <div><div class="xpnum"><span id="heroXP">0</span> <span>XP łącznie</span></div><div class="xp-ball-row"><div><div class="xp-fraction"><span id="heroLevelXP">0</span>/100</div><div class="xp-ball-hint">XP do następnego poziomu</div></div><button class="xp-ball" id="xpBall" type="button" aria-label="Podskocz piłką" title="Kliknij piłkę!">🏐</button></div><div class="progress"><div id="heroBar"></div></div><div class="tiny" id="nextLevelText">Zdobądź 100 XP, aby awansować.</div></div>
+    </div>
+  </section>
+
+  <nav class="nav" aria-label="Nawigacja aplikacji">
+    <button class="active" data-view="dashboard">🏠 Pulpit</button><button data-view="quiz">🧠 Quizy</button><button data-view="training">💪 Trening</button><button data-view="achievements">🏅 Osiągnięcia</button><button data-view="stats">📊 Statystyki i ranking</button>
+  </nav>
+
+  <main>
+    <section class="view active" id="view-dashboard">
+      <div class="section-head"><div><h2>Twój pulpit</h2><p>Witaj z powrotem, zawodniku. Gotowy na kolejną akcję?</p></div></div>
+      <div class="grid">
+        <div class="stat-card"><div class="stat-label">Łączne XP</div><div class="stat-value" id="dashXP">0</div><div class="stat-note">Każda dobra odpowiedź ma znaczenie</div></div>
+        <div class="stat-card"><div class="stat-label">Poprawne odpowiedzi</div><div class="stat-value" id="dashCorrect">0</div><div class="stat-note" id="dashAccuracy">Skuteczność: 0%</div></div>
+        <div class="stat-card"><div class="stat-label">Ukończone treningi</div><div class="stat-value" id="dashWorkouts">0</div><div class="stat-note">Liczone po ukończeniu całej sesji</div></div>
+        <div class="panel wide"><h3>🎯 Następny cel</h3><p id="goalText">Odpowiedz na pierwsze pytanie quizu, aby zdobyć XP.</p><div class="progress"><div id="goalProgress"></div></div><button class="btn primary" onclick="showView('quiz')">Przejdź do quizu</button></div>
+        <div class="panel"><h3>🏅 Ostatnie osiągnięcie</h3><div id="lastBadge" class="rowitem" style="margin-top:12px"><div class="badge-icon">🔒</div><div class="grow"><strong>Jeszcze przed tobą</strong><small>Rozegraj pierwszy quiz</small></div></div></div>
+        <div class="panel"><h3>💡 Wskazówka dnia</h3><p>W przyjęciu trzymaj platformę z przedramion stabilnie i kieruj piłkę do rozgrywającego. Kontrola jest ważniejsza niż mocne machanie rękami.</p></div>
+      </div>
+    </section>
+
+    <section class="view" id="view-quiz">
+      <div class="section-head"><div><h2>Strefa quizów</h2><p>2 XP za poprawną odpowiedź. Zbieraj XP, aby dojść do 100 i awansować.</p></div><span class="tag" id="quizTag">POZIOM 1 · PODSTAWY</span></div>
+      <div class="panel" style="margin-bottom:14px"><div style="display:flex;justify-content:space-between;gap:12px;align-items:center"><strong>⚡ Twój postęp</strong><strong><span id="quizLiveXP">0</span> XP łącznie</strong></div><div class="xp-ball-row"><div><div class="xp-fraction"><span id="quizLevelXP">0</span>/100</div><div class="xp-ball-hint" id="quizLiveNote">XP do następnego poziomu</div></div><button class="xp-ball" id="quizXpBall" type="button" aria-label="Podskocz piłką" title="Kliknij piłkę!">🏐</button></div><div class="progress"><div id="quizBar"></div></div></div>
+      <div class="quiz-layout">
+        <div class="panel" id="quizPanel">
+          <div class="question-meta"><span id="questionCounter">Pytanie 1 z 10</span><span class="tag" id="questionTopic">Zasady</span></div>
+          <h3 class="question" id="questionText">Ile odbić (nie licząc bloku) może wykonać drużyna, zanim przebije piłkę na drugą stronę?</h3>
+          <div class="answers" id="answers"></div>
+          <div class="feedback" id="feedback" role="status"></div>
+          <div class="quiz-footer"><span class="tiny" id="quizStatus">Postęp zapisuje się automatycznie na tym urządzeniu.</span><button class="btn primary" id="quizNext" disabled onclick="handleQuizButton()">Sprawdź odpowiedź</button></div>
+        </div>
+        <div class="panel"><h3>📌 Jak zdobywać XP?</h3><div class="list" style="margin-top:12px"><div class="rowitem"><div class="badge-icon">✅</div><div class="grow"><strong>Poprawna odpowiedź</strong><small>+2 XP</small></div></div><div class="rowitem"><div class="badge-icon">🏆</div><div class="grow"><strong>Ukończ quiz</strong><small>Buduj serię i skuteczność</small></div></div><div class="rowitem"><div class="badge-icon">💪</div><div class="grow"><strong>Ukończ trening</strong><small>+20 XP za sesję</small></div></div></div><div class="local-note">Quizy są częścią prototypu. Wynik i XP zapisują się w pamięci przeglądarki.</div></div>
+      </div>
+    </section>
+
+    <section class="view" id="view-training">
+      <div class="section-head"><div><h2>Plan treningowy</h2><p>Wybierz sesję, odhacz ćwiczenia i zakończ trening, gdy wykonasz cały plan.</p></div></div>
+      <div class="panel" style="margin-bottom:14px">
+        <h3>🏐 Wybierz pozycję</h3>
+        <p style="margin-bottom:12px">Pokaż treningi dopasowane do roli, którą chcesz ćwiczyć.</p>
+        <select id="positionFilter" class="btn secondary" style="width:100%;text-align:left;padding:12px" onchange="renderTraining()">
+          <option value="all">Wszystkie pozycje</option>
+          <option value="receiver">Przyjmujący</option>
+          <option value="libero">Libero</option>
+          <option value="setter">Rozgrywający</option>
+          <option value="outside">Atakujący / skrzydłowy</option>
+          <option value="middle">Środkowy</option>
+          <option value="opposite">Atakujący z prawego skrzydła</option>
+        </select>
+      </div>
+      <div class="grid" id="trainingGrid"></div>
+      <div class="local-note">Bezpieczna zasada: rozgrzej się przed treningiem, rób przerwy i przerwij ćwiczenie, jeśli pojawi się ból.</div>
+    </section>
+
+    <section class="view" id="view-achievements">
+      <div class="section-head"><div><h2>Odznaki i osiągnięcia</h2><p>Odblokowuj je, grając regularnie i poprawiając swoje wyniki.</p></div><span class="tag" id="badgeCount">0 / 21 ODBLOKOWANYCH</span></div>
+      <div class="badge-grid" id="badgeGrid"></div>
+    </section>
+
+    <section class="view" id="view-stats">
+      <div class="section-head"><div><h2>Statystyki i ranking</h2><p>Śledź swój postęp i porównuj wyniki w tej wersji aplikacji.</p></div></div>
+      <div class="grid">
+        <div class="stat-card"><div class="stat-label">Odpowiedzi łącznie</div><div class="stat-value" id="statAnswered">0</div></div>
+        <div class="stat-card"><div class="stat-label">Skuteczność</div><div class="stat-value" id="statAccuracy">0%</div></div>
+        <div class="stat-card"><div class="stat-label">Odznaki</div><div class="stat-value" id="statBadges">0/21</div></div>
+        <div class="panel wide"><h3>📈 Twoje wyniki</h3><div id="statsSummary" class="list" style="margin-top:12px"></div></div>
+        <div class="panel"><h3>🥇 Ranking lokalny</h3><p class="tiny" style="margin-bottom:12px">To demonstracyjny ranking na tym urządzeniu, nie ranking internetowy.</p><div id="leaderboard" class="list"></div></div>
+        <div class="panel"><h3>⚙️ Dane aplikacji</h3><p class="tiny" style="margin-bottom:14px">Postępy są zapisane lokalnie w tej przeglądarce. Wyczyszczenie danych witryny może je usunąć.</p><button class="btn secondary" onclick="exportProgress()">Pobierz kopię postępów</button> <button class="btn secondary" onclick="resetProgress()">Zresetuj postępy</button></div>
+      </div>
+    </section>
+  </main>
+  <footer>SIATKÓWKA QUEST · Prototyp 1.0 · Zbudowany do nauki i treningu</footer>
+</div>
+<div class="toast" id="toast" role="status"></div>
+<script>
+const questions = [
+ {topic:"Zasady",q:"Ile odbić (nie licząc bloku) może wykonać drużyna, zanim przebije piłkę na drugą stronę?",a:["Jedno odbicie, a potem piłka musi przejść nad siatką","Dwa odbicia, jeśli drużyna zaczęła akcję przy siatce","Trzy odbicia, zanim piłka wróci na stronę przeciwnika","Cztery odbicia, jeśli ostatnie wykonuje libero"],correct:2,why:"Drużyna ma maksymalnie trzy odbicia. Dotknięcie piłki w bloku nie wlicza się do tej liczby."},
+ {topic:"Zagrywka",q:"Z której pozycji zagrywa zawodnik, gdy jego drużyna ma prawo do zagrywki?",a:["Z pozycji 1, z prawej strony za linią końcową boiska","Z pozycji 3, ze środka boiska tuż przy siatce","Z dowolnej pozycji, jeśli nie przekroczy linii ataku","Z pozycji 4, z lewego skrzydła przy linii bocznej"],correct:0,why:"Zagrywa zawodnik z pozycji 1, ze strefy zagrywki za linią końcową."},
+ {topic:"Przyjęcie",q:"Co najczęściej pomaga przyjąć mocną zagrywkę?",a:["Usztywnienie kolan i mocne machanie rękami przy odbiciu","Stabilna platforma z przedramion oraz aktywna praca nóg","Odwrócenie się plecami i próba odbicia piłki za siebie","Wykonanie wysokiego skoku przed każdym kontaktem z piłką"],correct:1,why:"Ustawienie nóg i stabilny kąt przedramion pomagają kontrolować kierunek odbicia."},
+ {topic:"Rotacja",q:"W którą stronę rotuje drużyna po odzyskaniu prawa do zagrywki?",a:["Przeciwnie do ruchu wskazówek zegara, o jedną pozycję","Zgodnie z ruchem wskazówek zegara, o jedną pozycję","Przesuwa się tylko rozgrywający, pozostali zostają na miejscach","Nie wykonuje rotacji, dopóki nie straci punktu w kolejnej akcji"],correct:1,why:"Przy rotacji zawodnicy przesuwają się o jedną pozycję zgodnie z ruchem wskazówek zegara."},
+ {topic:"Atak",q:"Co pomaga atakującemu skutecznie uderzyć piłkę?",a:["Wykonać rozbieg bez patrzenia na kierunek wystawy i blok","Dopasować rozbieg, timing i uderzyć piłkę przed sobą","Zawsze uderzyć z całej siły, niezależnie od ustawienia bloku","Złapać piłkę w najwyższym punkcie, aby lepiej ją kontrolować"],correct:1,why:"Dobry timing i kontakt z piłką przed sobą są ważniejsze niż sama siła."},
+ {topic:"Obrona",q:"Jak najlepiej przygotować się do obrony mocnego ataku?",a:["Stać prosto na piętach i czekać, aż piłka zbliży się do ciała","Obniżyć pozycję, obserwować atakującego i być gotowym do ruchu","Odwrócić się do siatki, żeby chronić twarz przed uderzeniem piłki","Zawsze podbiec pod samą siatkę, niezależnie od ustawienia ataku"],correct:1,why:"Niska, stabilna pozycja pozwala szybciej ruszyć w kierunku piłki."},
+ {topic:"Taktyka",q:"Przeciwnik ustawia podwójny blok przeciwko twojemu skrzydłowemu. Co może zrobić rozgrywający?",a:["Zawsze wystawić piłkę w to samo miejsce, bez względu na blok","Rozważyć wystawę do innego atakującego, jeśli ma lepszą sytuację","Złapać piłkę obiema rękami i rozpocząć akcję od nowa","Przerwać akcję i oddać punkt, gdy przeciwnicy ustawią blok"],correct:1,why:"Rozgrywający powinien czytać ustawienie bloku i szukać korzystniejszej opcji."},
+ {topic:"Atak z drugiej linii",q:"Czy zawodnik z drugiej linii może zaatakować piłkę całkowicie powyżej siatki?",a:["Tak, jeśli wybija się zza linii ataku i nie przekracza jej przy odbiciu","Nie, zawodnik z drugiej linii nigdy nie może atakować ponad siatką","Tak, ale tylko wtedy, gdy wynik seta wynosi dokładnie 24:24","Nie, zawodnik z drugiej linii nie może wyskakiwać do ataku"],correct:0,why:"Zawodnik z drugiej linii może wykonać taki atak, jeśli odbija się zza linii ataku. Nie może jej dotknąć ani przekroczyć przy odbiciu."},
+ {topic:"Komunikacja",q:"Piłka leci między tobą a kolegą z drużyny. Co najlepiej zrobić?",a:["Milczeć do końca akcji i liczyć, że kolega sam ją odbierze","Jasno zawołać „moja” lub ustalić, kto powinien odebrać piłkę","Założyć, że kolega ją odbierze, i nie zmieniać swojego ustawienia","Odejść od piłki, żeby uniknąć pomyłki przy wspólnym odbiorze"],correct:1,why:"Krótka i głośna komunikacja pomaga uniknąć zderzeń i nieporozumień."},
+ {topic:"Fair play",q:"Co robisz, gdy nie jesteś pewien, czy piłka dotknęła linii?",a:["Kłócisz się z przeciwnikiem, dopóki nie zmieni swojej opinii","Zachowujesz spokój i respektujesz decyzję sędziego","Opuszczasz boisko, bo nie zgadzasz się z przebiegiem akcji","Samodzielnie zmieniasz wynik, jeśli uważasz, że masz rację"],correct:1,why:"Szacunek dla sędziego, przeciwników i drużyny jest częścią dobrej gry."}
+];
+const trainingPlans = [
+ {id:"receive",icon:"🎯",name:"Przyjęcie i kontrola",time:"15–20 min",level:"Początkujący",positions:["receiver","libero"],desc:"Praca nóg, platforma i dokładność odbicia.",tasks:["Rozgrzewka całego ciała — 3 min","Pozycja gotowości i kroki w bok — 3 × 30 s","Odbicia sposobem dolnym do celu — 3 × 10","Odbicia sposobem górnym — 3 × 10","Spokojne rozciąganie — 2 min"]},
+ {id:"serve",icon:"🚀",name:"Zagrywka",time:"15–20 min",level:"Podstawy",positions:["receiver","libero","setter","outside","middle","opposite"],desc:"Rytm, podrzut i celność — bez gonienia za siłą.",tasks:["Rozgrzewka barków i nadgarstków — 3 min","Ćwiczenie podrzutu piłki — 3 × 8","Ruch zagrywki bez piłki — 2 × 8","Zagrywki w wybrany cel — 3 × 5","Zapisz, co wyszło najlepiej"]},
+ {id:"movement",icon:"⚡",name:"Poruszanie i obrona",time:"12–18 min",level:"Podstawy",positions:["receiver","libero","middle","outside","opposite"],desc:"Równowaga, szybkie kroki i bezpieczna pozycja.",tasks:["Lekka rozgrzewka — 3 min","Kroki w bok w pozycji obronnej — 3 × 20 s","Krok do przodu i powrót — 3 × 6","Reakcja na sygnał lub rzut piłki — 3 × 6","Schłodzenie i oddech — 2 min"]},
+ {id:"setter",icon:"👐",name:"Rozgrywający — dokładna wystawa",time:"12–18 min",level:"Podstawy",positions:["setter"],desc:"Czucie piłki, ustawienie dłoni i dokładność wystawy.",tasks:["Rozgrzewka palców, nadgarstków i barków — 3 min","Wystawa do siebie w miejscu — 3 × 10","Wystawa do celu na ścianie lub do partnera — 3 × 8","Przemieszczenie do piłki i wystawa — 3 × 5","Schłodzenie — 2 min"]},
+ {id:"libero",icon:"🛡️",name:"Libero — obrona i przyjęcie",time:"15–20 min",level:"Podstawy",positions:["libero"],desc:"Niska pozycja, czytanie piłki i kontrola odbicia.",tasks:["Rozgrzewka i pozycja gotowości — 3 min","Kroki w bok w niskiej pozycji — 3 × 20 s","Przyjęcie piłki do wyznaczonego celu — 3 × 8","Reakcja na lekkie rzuty piłki w różne strony — 3 × 6","Spokojne schłodzenie — 2 min"]},
+ {id:"receiver",icon:"🎯",name:"Przyjmujący — przyjęcie i atak",time:"15–20 min",level:"Podstawy",positions:["receiver"],desc:"Łącz przyjęcie zagrywki z przygotowaniem do ataku.",tasks:["Rozgrzewka całego ciała — 3 min","Platforma z przedramion i celne odbicia — 3 × 8","Kroki do piłki i powrót do pozycji — 3 × 6","Praca nóg do rozbiegu bez maksymalnych skoków — 3 × 5","Schłodzenie — 2 min"]},
+ {id:"outside",icon:"💥",name:"Skrzydłowy — rozbieg i atak",time:"12–18 min",level:"Podstawy",positions:["outside","opposite"],desc:"Rytm rozbiegu, timing i bezpieczne lądowanie.",tasks:["Rozgrzewka kostek, kolan i barków — 3 min","Rozbieg bez skoku, skup się na rytmie — 3 × 5","Wyskok i lądowanie obunóż w miejscu — 2 × 5","Ruch ramienia do ataku bez piłki — 3 × 6","Schłodzenie — 2 min"]},
+ {id:"middle",icon:"🧱",name:"Środkowy — blok i reakcja",time:"12–18 min",level:"Podstawy",positions:["middle"],desc:"Praca nóg przy siatce, ustawienie dłoni i timing bloku.",tasks:["Rozgrzewka i lekkie kroki — 3 min","Kroki blokujące w bok bez skoku — 3 × 5 na stronę","Ustawienie dłoni nad głową przy ścianie — 3 × 8","Reakcja na wskazany kierunek — 3 × 6","Schłodzenie — 2 min"]}
+];
+const badgeDefs=[
+ {id:"first",icon:"🌱",name:"Pierwszy krok",desc:"Odpowiedz na pierwsze pytanie.",test:s=>s.answered>=1},
+ {id:"smart",icon:"🧠",name:"Bystry gracz",desc:"Zdobądź 5 poprawnych odpowiedzi.",test:s=>s.correct>=5},
+ {id:"xp100",icon:"⚡",name:"Setka XP",desc:"Zdobądź 100 XP.",test:s=>s.xp>=100},
+ {id:"training",icon:"💪",name:"Pierwszy trening",desc:"Ukończ jedną sesję treningową.",test:s=>s.workouts>=1},
+ {id:"perfect",icon:"🎯",name:"Seria trafień",desc:"Odpowiedz poprawnie 5 razy z rzędu.",test:s=>s.bestStreak>=5},
+ {id:"collector",icon:"🏆",name:"Kolekcjoner",desc:"Zdobądź 10 innych odznak.",test:s=>badgeDefs.filter(b=>b.id!=="collector"&&b.test(s)).length>=10},
+ {id:"bounce100",icon:"🏐",name:"Mistrz odbić",desc:"Odbij piłkę 100 razy (klikając w nią).",test:s=>(s.bounces||0)>=100},
+ {id:"streak3",icon:"⚡",name:"Rozgrzewka",desc:"Odpowiedz poprawnie 3 razy z rzędu.",test:s=>s.bestStreak>=3},
+ {id:"correct10",icon:"🔟",name:"Dziesiątka",desc:"Zdobądź 10 poprawnych odpowiedzi.",test:s=>s.correct>=10},
+ {id:"correct50",icon:"🎓",name:"Pół setki",desc:"Zdobądź 50 poprawnych odpowiedzi.",test:s=>s.correct>=50},
+ {id:"streak10",icon:"🔥",name:"Ogień!",desc:"Odpowiedz poprawnie 10 razy z rzędu.",test:s=>s.bestStreak>=10},
+ {id:"quizdone",icon:"📋",name:"Quiz ukończony",desc:"Ukończ cały quiz (10 pytań).",test:s=>(s.completedQuizzes||0)>=1},
+ {id:"quiz3",icon:"📚",name:"Trzy quizy",desc:"Ukończ 3 quizy.",test:s=>(s.completedQuizzes||0)>=3},
+ {id:"flawless",icon:"💎",name:"Bezbłędny",desc:"Ukończ quiz z wynikiem 10/10.",test:s=>(s.perfectQuizzes||0)>=1},
+ {id:"xp200",icon:"🚀",name:"200 XP",desc:"Zdobądź 200 XP.",test:s=>s.xp>=200},
+ {id:"xp500",icon:"👑",name:"500 XP",desc:"Zdobądź 500 XP.",test:s=>s.xp>=500},
+ {id:"train3",icon:"🏋️",name:"Trzy treningi",desc:"Ukończ 3 sesje treningowe.",test:s=>s.workouts>=3},
+ {id:"trainall",icon:"🥇",name:"Pełny trening",desc:"Ukończ wszystkie plany treningowe.",test:s=>s.workouts>=trainingPlans.length},
+ {id:"answered25",icon:"✍️",name:"25 odpowiedzi",desc:"Odpowiedz na 25 pytań.",test:s=>s.answered>=25},
+ {id:"answered100",icon:"💯",name:"100 odpowiedzi",desc:"Odpowiedz na 100 pytań.",test:s=>s.answered>=100},
+ {id:"accuracy80",icon:"🎯",name:"Celne oko",desc:"Skuteczność min. 80% po 20 odpowiedziach.",test:s=>s.answered>=20&&s.correct/s.answered>=0.8}
+];
+const initialState={bounces:0,perfectQuizzes:0,xp:0,answered:0,correct:0,workouts:0,streak:0,bestStreak:0,completedQuizzes:0,unlocked:[],completedQuestions:[],trainingChecks:{},completedPlans:[],lastPlayed:null};
+let state=loadState(), qIndex=0, selected=null, answeredCurrent=false, activeAnswers=[], activeCorrect=0, answerPositionCounts=[0,0,0,0], displayedQuestionIndex=-1, quizCorrectThisRound=0;
+function loadState(){try{return {...initialState,...JSON.parse(localStorage.getItem("volleyballQuestSave")||"{}")}}catch(e){return {...initialState}}}
+function save(){
+ try { localStorage.setItem("volleyballQuestSave",JSON.stringify(state)); } catch(e) { /* keep session playable if storage is unavailable */ }
+ renderAll();
+ updateXPDisplay();
+}
+function getUnlocked(s=state){return badgeDefs.filter(b=>b.test(s)).map(b=>b.id)}
+function level(){return Math.floor(state.xp/100)+1}
+function showView(name){document.querySelectorAll(".view").forEach(v=>v.classList.toggle("active",v.id==="view-"+name));document.querySelectorAll(".nav button").forEach(b=>b.classList.toggle("active",b.dataset.view===name));if(name==="quiz")renderQuestion();window.scrollTo({top:0,behavior:"smooth"})}
+document.querySelectorAll(".nav button").forEach(b=>b.addEventListener("click",()=>showView(b.dataset.view)));
+function bounceXPBall(id){const ball=document.getElementById(id);if(!ball)return;ball.classList.remove("bounce");void ball.offsetWidth;ball.classList.add("bounce");ball.addEventListener("animationend",()=>ball.classList.remove("bounce"),{once:true});}
+function countBounce(id){bounceXPBall(id);state.bounces=(Number(state.bounces)||0)+1;checkBadges();save();}
+document.getElementById("xpBall")?.addEventListener("click",()=>countBounce("xpBall"));
+document.getElementById("quizXpBall")?.addEventListener("click",()=>countBounce("quizXpBall"));
+function toast(msg){const el=document.getElementById("toast");el.textContent=msg;el.classList.add("show");setTimeout(()=>el.classList.remove("show"),2300)}
+function checkBadges(){const now=getUnlocked();const newly=now.filter(id=>!state.unlocked.includes(id));if(newly.length){state.unlocked=[...new Set([...state.unlocked,...newly])];setTimeout(()=>toast("Odznaka odblokowana: "+badgeDefs.find(b=>b.id===newly[0]).name+"!"),100)}}
+function renderQuestion(){
+ const q=questions[qIndex%questions.length];selected=null;answeredCurrent=false;
+ if(displayedQuestionIndex!==qIndex){
+  // Rozłóż poprawne odpowiedzi możliwie równo między A, B, C i D.
+  const leastUsed=Math.min(...answerPositionCounts);
+  const candidatePositions=answerPositionCounts.map((n,i)=>n===leastUsed?i:-1).filter(i=>i>=0);
+  activeCorrect=candidatePositions[Math.floor(Math.random()*candidatePositions.length)];
+  answerPositionCounts[activeCorrect]++;
+  const distractors=q.a.map((label,i)=>({label,correct:i===q.correct})).filter(x=>!x.correct);
+  for(let i=distractors.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[distractors[i],distractors[j]]=[distractors[j],distractors[i]];}
+  activeAnswers=[];let d=0;
+  for(let i=0;i<q.a.length;i++) activeAnswers.push(i===activeCorrect?q.a[q.correct]:distractors[d++].label);
+  displayedQuestionIndex=qIndex;
+ }
+ document.getElementById("questionCounter").textContent=`Pytanie ${qIndex%questions.length+1} z ${questions.length}`;
+ document.getElementById("questionTopic").textContent=q.topic;
+ document.getElementById("questionText").textContent=q.q;
+ document.getElementById("quizTag").textContent="QUIZ · "+q.topic.toUpperCase();
+ document.getElementById("quizNext").disabled=true;document.getElementById("quizNext").textContent="Sprawdź odpowiedź";
+ document.getElementById("feedback").className="feedback";document.getElementById("feedback").innerHTML="";
+ const a=document.getElementById("answers");a.innerHTML="";
+ activeAnswers.forEach((label,i)=>{const b=document.createElement("button");b.className="answer";b.innerHTML=`<span class="letter">${String.fromCharCode(65+i)}</span><span>${label}</span>`;b.onclick=()=>{if(answeredCurrent)return;selected=i;document.querySelectorAll(".answer").forEach(x=>x.classList.remove("selected"));b.classList.add("selected");checkAnswer();};a.appendChild(b)});
+ document.getElementById("quizStatus").textContent="Postęp zapisuje się automatycznie na tym urządzeniu.";
+}
+function checkAnswer(){
+ if(answeredCurrent || selected===null) return;
+ const q=questions[qIndex%questions.length], feedback=document.getElementById("feedback");
+ answeredCurrent=true;
+ state.answered++;
+ state.lastPlayed=new Date().toISOString();
+ document.querySelectorAll(".answer").forEach((b,i)=>{
+   b.disabled=true;
+   if(i===activeCorrect)b.classList.add("correct");
+   if(i===selected && i!==activeCorrect)b.classList.add("wrong");
+ });
+ if(selected===activeCorrect){
+   state.correct++;
+   quizCorrectThisRound++;
+   state.xp=(Number(state.xp)||0)+2;
+   // Celebrate every correct answer by bouncing the visible volleyball.
+   bounceXPBall("xpBall");
+   bounceXPBall("quizXpBall");
+   state.streak++;
+   state.bestStreak=Math.max(state.bestStreak,state.streak);
+   feedback.innerHTML=`<strong>✅ Dobra odpowiedź! +2 XP</strong>${q.why}`;
+ }else{
+   state.streak=0;
+   feedback.innerHTML=`<strong>❌ Jeszcze nie tym razem.</strong> Poprawna odpowiedź: ${String.fromCharCode(65+activeCorrect)}. ${q.why}`;
+ }
+ if(qIndex===questions.length-1){
+   state.completedQuizzes=(state.completedQuizzes||0)+1;
+   if(quizCorrectThisRound===questions.length){
+     state.perfectQuizzes=(state.perfectQuizzes||0)+1;
+     state.xp=(Number(state.xp)||0)+20;
+     feedback.innerHTML+=`<div style="margin-top:10px"><strong>🏆 Perfekcyjny quiz: 10/10! Bonus +20 XP</strong></div>`;
+   } else {
+     feedback.innerHTML+=`<div style="margin-top:10px"><strong>Quiz ukończony: ${quizCorrectThisRound}/10. Bonus +20 XP dostaniesz za komplet 10/10.</strong></div>`;
+   }
+ }
+ feedback.classList.add("show");
+ const next=document.getElementById("quizNext");
+ next.disabled=false;
+ next.textContent=qIndex===questions.length-1?"Zakończ quiz":"Następne pytanie";
+ checkBadges();
+ save();
+ renderAll();
+ updateXPDisplay();
+}
+function handleQuizButton(){
+ if(!answeredCurrent){checkAnswer();return;}
+ qIndex=(qIndex+1)%questions.length;
+ if(qIndex===0){answerPositionCounts=[0,0,0,0];quizCorrectThisRound=0;}
+ renderQuestion();
+}
+function nextQuestion(){ handleQuizButton(); }
+function renderTraining(){
+ const grid=document.getElementById("trainingGrid");grid.innerHTML="";
+ const selectedPosition=document.getElementById("positionFilter")?.value||"all";
+ const visiblePlans=trainingPlans.filter(plan=>selectedPosition==="all"||!plan.positions||plan.positions.includes(selectedPosition));
+ visiblePlans.forEach(plan=>{const checked=state.trainingChecks[plan.id]||[];const done=state.completedPlans.includes(plan.id);const el=document.createElement("div");el.className="panel training-card";el.innerHTML=`<div class="training-top"><div class="badge-icon">${plan.icon}</div><div class="grow"><h3>${plan.name}</h3><p>${plan.desc}</p><div class="tiny" style="margin-top:7px">${plan.time} · ${plan.level}</div></div></div><div class="training-progress">${checked.length} z ${plan.tasks.length} ćwiczeń odhaczonych</div><div class="progress"><div style="width:${checked.length/plan.tasks.length*100}%"></div></div><div class="tasks"></div><button class="btn ${done?'secondary':'primary'} finish" ${done?'disabled':''}>${done?'✓ Trening ukończony': 'Zakończ trening (+20 XP)'}</button>`;
+ const tasks=el.querySelector(".tasks");plan.tasks.forEach((t,i)=>{const lab=document.createElement("label");lab.className="checkline";const inp=document.createElement("input");inp.type="checkbox";inp.checked=checked.includes(i);inp.onchange=()=>{const arr=new Set(state.trainingChecks[plan.id]||[]);inp.checked?arr.add(i):arr.delete(i);state.trainingChecks[plan.id]=[...arr];save();renderTraining()};lab.append(inp,document.createTextNode(t));tasks.append(lab)});
+ const finish=el.querySelector(".finish");finish.onclick=()=>{if((state.trainingChecks[plan.id]||[]).length<plan.tasks.length){toast("Odhacz wszystkie ćwiczenia, zanim ukończysz sesję.");return}if(!state.completedPlans.includes(plan.id)){state.completedPlans.push(plan.id);state.workouts++;state.xp+=20;checkBadges();save();renderTraining();toast("Trening ukończony! +20 XP")}};grid.append(el)});
+}
+function renderBadges(){const grid=document.getElementById("badgeGrid");grid.innerHTML="";const unlocked=getUnlocked();document.getElementById("badgeCount").textContent=`${unlocked.length} / ${badgeDefs.length} ODBLOKOWANYCH`;badgeDefs.forEach(b=>{const yes=unlocked.includes(b.id);const el=document.createElement("div");el.className="badge-card "+(yes?"":"locked");el.innerHTML=`<div class="badge-icon">${yes?b.icon:"🔒"}</div><strong>${b.name}</strong><small>${yes?"Odblokowano":b.desc}</small>`;grid.append(el)})}
+function updateXPDisplay(){
+ const lv=level(), levelXP=Math.max(0,Number(state.xp)||0)%100;
+ const put=(id,value)=>{const el=document.getElementById(id);if(el)el.textContent=value;};
+ put("topLevel",lv);put("topXP",state.xp+" XP");put("heroXP",state.xp);put("dashXP",state.xp);
+ put("heroLevelXP",levelXP);put("quizLevelXP",levelXP);
+ put("nextLevelText",`${100-levelXP} XP do poziomu ${lv+1}`);
+ put("goalText",state.xp<100?`Zdobądź jeszcze ${100-state.xp} XP, aby osiągnąć poziom 2.`:`Świetnie! Masz ${state.xp} XP. Zbieraj dalej, aby osiągnąć poziom ${lv+1}.`);
+ const pct=levelXP+"%";["heroBar","quizBar","goalProgress"].forEach(id=>{const el=document.getElementById(id);if(el)el.style.width=pct;});put("quizLiveXP",state.xp);put("quizLiveNote",`Jeszcze ${100-levelXP} XP do poziomu ${lv+1}.`);
+}
+function renderAll(){
+ const lv=level();
+ document.getElementById("topLevel").textContent=lv;document.getElementById("topXP").textContent=state.xp+" XP";document.getElementById("heroXP").textContent=state.xp;document.getElementById("heroLevelXP").textContent=(Number(state.xp)||0)%100;document.getElementById("quizLevelXP").textContent=(Number(state.xp)||0)%100;document.getElementById("nextLevelText").textContent=`${100-((Number(state.xp)||0)%100)} XP do poziomu ${lv+1}`;
+ document.getElementById("heroLevelName").textContent=lv===1?"Początkujący":lv===2?"Gracz rozwijający się":lv===3?"Zaawansowany gracz":"Mistrz boiska";document.getElementById("heroLevelSub").textContent=`Poziom ${lv} · ${lv===1?"Rozgrzewka":lv===2?"Budowanie formy":lv===3?"Gra taktyczna":"Elita"}`;
+ document.getElementById("dashXP").textContent=state.xp;document.getElementById("dashCorrect").textContent=state.correct;document.getElementById("dashAccuracy").textContent="Skuteczność: "+(state.answered?Math.round(state.correct/state.answered*100):0)+"%";document.getElementById("dashWorkouts").textContent=state.workouts;
+ document.getElementById("goalText").textContent=state.xp<100?`Zdobądź jeszcze ${100-state.xp} XP, aby osiągnąć poziom 2.`:`Świetnie! Masz ${state.xp} XP. Zbieraj dalej, aby osiągnąć poziom ${lv+1}.`;
+ document.getElementById("statAnswered").textContent=state.answered;document.getElementById("statAccuracy").textContent=(state.answered?Math.round(state.correct/state.answered*100):0)+"%";document.getElementById("statBadges").textContent=getUnlocked().length+"/"+badgeDefs.length;
+ const lb=[{name:"Ty",xp:state.xp,icon:"🏐"},{name:"SerwisMaster",xp:120,icon:"🚀"},{name:"BlokBoss",xp:90,icon:"🧱"},{name:"LiberoPro",xp:70,icon:"🛡️"}].sort((a,b)=>b.xp-a.xp);document.getElementById("leaderboard").innerHTML=lb.map((x,i)=>`<div class="rowitem"><div class="rank">${i+1}</div><div class="badge-icon">${x.icon}</div><div class="grow"><strong>${x.name}</strong><small>${x.name==="Ty"?"Twój wynik":"Przykładowy gracz"}</small></div><strong>${x.xp} XP</strong></div>`).join("");
+ document.getElementById("statsSummary").innerHTML=`<div class="rowitem"><div class="badge-icon">🧠</div><div class="grow"><strong>Quizy</strong><small>${state.answered} odpowiedzi · ${state.correct} poprawnych</small></div></div><div class="rowitem"><div class="badge-icon">💪</div><div class="grow"><strong>Trening</strong><small>${state.workouts} ukończonych sesji</small></div></div><div class="rowitem"><div class="badge-icon">🔥</div><div class="grow"><strong>Najlepsza seria</strong><small>${state.bestStreak} poprawnych odpowiedzi z rzędu</small></div></div>`;
+ const un=getUnlocked();const last=un.length?badgeDefs.find(b=>b.id===un[un.length-1]):null;document.getElementById("lastBadge").innerHTML=last?`<div class="badge-icon">${last.icon}</div><div class="grow"><strong>${last.name}</strong><small>${last.desc}</small></div>`:`<div class="badge-icon">🔒</div><div class="grow"><strong>Jeszcze przed tobą</strong><small>Rozegraj pierwszy quiz</small></div>`;
+ renderBadges();
+ updateXPDisplay();
+}
+function exportProgress(){const blob=new Blob([JSON.stringify(state,null,2)],{type:"application/json"});const url=URL.createObjectURL(blob);const a=document.createElement("a");a.href=url;a.download="siatkowka-quest-postepy.json";a.click();URL.revokeObjectURL(url);toast("Przygotowano kopię postępów.");}
+function resetProgress(){if(confirm("Na pewno zresetować wszystkie postępy? Tej operacji nie można cofnąć.")){localStorage.removeItem("volleyballQuestSave");state={...initialState,trainingChecks:{},completedPlans:[],unlocked:[],completedQuestions:[]};qIndex=0;renderAll();renderQuestion();renderTraining();toast("Postępy zresetowane.");}}
+if("serviceWorker" in navigator&&/^https?:/.test(location.protocol)){window.addEventListener("load",()=>navigator.serviceWorker.register("sw.js").catch(()=>{}));}
+renderAll();renderQuestion();renderTraining();
+</script>
+</body>
+</html>
